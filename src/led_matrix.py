@@ -9,6 +9,7 @@ except ImportError:
 #from Adafruit_LED_Backpack import BicolorMatrix8x8
 from sense_hat import SenseHat
 from bluez_components import *
+sense = SenseHat()
 
 mainloop = None
 
@@ -113,7 +114,7 @@ class LedService(Service):
         self.add_characteristic(RowChrc(bus, 2, self, 2, display))
         self.add_characteristic(RowChrc(bus, 3, self, 3, display))
         self.add_characteristic(RowChrc(bus, 4, self, 4, display))
-        self.add_characteristic(RowLedApplicationChrc(bus, 5, self, 5, display))
+        self.add_characteristic(RowChrc(bus, 5, self, 5, display))
         self.add_characteristic(RowChrc(bus, 6, self, 6, display))
         self.add_characteristic(RowChrc(bus, 7, self, 7, display))
 
@@ -128,11 +129,11 @@ class LedAdvertisement(Advertisement):
     def __init__(self, bus, index):
         Advertisement.__init__(self, bus, index, 'peripheral')
         self.add_service_uuid(LedService.LED_SVC_UUID)
-        self.include_tx_power = TruLedApplicatione
+        self.include_tx_power = True
 
 
 def setup_display():
-    SenseHat.clear()
+    sense.clear()
 
 
 def register_ad_cb():
