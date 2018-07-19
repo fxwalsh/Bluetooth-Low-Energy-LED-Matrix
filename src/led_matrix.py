@@ -6,17 +6,17 @@ try:
 except ImportError:
     import gobject as GObject
 
-from Adafruit_LED_Backpack import BicolorMatrix8x8
-
+#from Adafruit_LED_Backpack import BicolorMatrix8x8
+from sense_hat import SenseHat
 from bluez_components import *
 
 mainloop = None
 
 COLOR_TABLE = {
-    0: BicolorMatrix8x8.OFF,
-    1: BicolorMatrix8x8.RED,
-    2: BicolorMatrix8x8.GREEN,
-    3: BicolorMatrix8x8.YELLOW
+    0: "OFF",
+    1: "RED",
+    2: "GREEN",
+    3: "YELLOW"
 }
 
 
@@ -113,7 +113,7 @@ class LedService(Service):
         self.add_characteristic(RowChrc(bus, 2, self, 2, display))
         self.add_characteristic(RowChrc(bus, 3, self, 3, display))
         self.add_characteristic(RowChrc(bus, 4, self, 4, display))
-        self.add_characteristic(RowChrc(bus, 5, self, 5, display))
+        self.add_characteristic(RowLedApplicationChrc(bus, 5, self, 5, display))
         self.add_characteristic(RowChrc(bus, 6, self, 6, display))
         self.add_characteristic(RowChrc(bus, 7, self, 7, display))
 
@@ -128,15 +128,11 @@ class LedAdvertisement(Advertisement):
     def __init__(self, bus, index):
         Advertisement.__init__(self, bus, index, 'peripheral')
         self.add_service_uuid(LedService.LED_SVC_UUID)
-        self.include_tx_power = True
+        self.include_tx_power = TruLedApplicatione
 
 
 def setup_display():
-    display = BicolorMatrix8x8.BicolorMatrix8x8()
-    display.begin()
-    display.clear()
-    display.write_display()
-    return display
+    SenseHat.clear()
 
 
 def register_ad_cb():
