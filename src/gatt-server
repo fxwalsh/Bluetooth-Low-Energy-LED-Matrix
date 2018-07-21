@@ -87,11 +87,12 @@ class LightColourCharacteristic(Characteristic):
     def WriteValue(self, value, options):
         print('light Colour WriteValue called')
 
-        # if len(value)==0:
-        #     raise InvalidValueLengthException()
-        #out=''.join(int(i) for i in value)
-        print('Control Point length: '+repr(len(value)))
+         if len(value)!=3:
+             raise InvalidValueLengthException()
+
+        print('Colour value length: '+repr(len(value)))
         sense.clear([int(value[0]),int(value[1]),int(value[2])])
+        self.value = value
         #if byte != 1:
         #    raise FailedException("0x80")
 
