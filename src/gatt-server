@@ -85,18 +85,18 @@ class LightColourCharacteristic(Characteristic):
         return self.value
 
     def WriteValue(self, value, options):
-        print('Heart Rate Control Point WriteValue called')
+        print('light Colour WriteValue called')
 
         # if len(value)==0:
         #     raise InvalidValueLengthException()
-        out=''.join(int(i) for i in value)
-        print('Control Point value: '+out)
-        sense.clear([int(out),int(out),int(out)])
-        if byte != 1:
-            raise FailedException("0x80")
+        #out=''.join(int(i) for i in value)
+        print('Control Point value: '+value)
+        sense.clear([int(value[0]),int(value[1]),int(value[2])])
+        #if byte != 1:
+        #    raise FailedException("0x80")
 
-        print('Energy Expended field reset!')
-        self.service.energy_expended = 0
+        print('Finished changing colour!')
+        #self.service.energy_expended = 0
 
 
 class TestDescriptor(Descriptor):
