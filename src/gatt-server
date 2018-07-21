@@ -76,6 +76,7 @@ class LightColourCharacteristic(Characteristic):
                 ['read', 'write', 'writable-auxiliaries'],
                 service)
         self.value = [0,0,0]
+        sense.clear([self.value[0],self.value[1],self.value[2]])
         self.add_descriptor(TestDescriptor(bus, 0, self))
         self.add_descriptor(
                 CharacteristicUserDescriptionDescriptor(bus, 1, self))
