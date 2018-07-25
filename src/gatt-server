@@ -9,7 +9,7 @@ except ImportError:
 import sys
 import array
 from bluez_components import *
-sense = SenseHat()
+
 
 class DemoService(Service):
     TEST_SVC_UUID = 'FF10'
@@ -77,7 +77,7 @@ def main():
             GATT_MANAGER_IFACE)
 
     app = Application(bus)
-    app.add_service(SmartLightService(bus, 0))
+    app.add_service(DemoService(bus, 0))
     mainloop = GObject.MainLoop()
 
     print('Registering GATT application...')
