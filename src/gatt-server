@@ -12,41 +12,6 @@ from sense_hat import SenseHat
 from bluez_components import *
 sense = SenseHat()
 
-class Application(dbus.service.Object):
-    """
-    org.bluez.GattApplication1 interface implementation
-    """
-    def __init__(self, bus):
-        self.path = '/'
-        self.services = []
-        dbus.service.Object.__init__(self, bus, self.path)
-#        self.add_service(HeartRateService(bus, 0))
-#        self.add_service(BatteryService(bus, 1))
-        self.add_service(SmartLightService(bus, 0))
-
-    def get_path(self):
-        return dbus.ObjectPath(self.path)
-
-    def add_service(self, service):
-        self.services.append(service)
-
-    @dbus.service.method(DBUS_OM_IFACE, out_signature='a{oa{sa{sv}}}')
-    def GetManagedObjects(self):
-        response = {}
-        print('GetManagedObjects')
-
-        for service in self.services:
-            response[service.get_path()] = service.get_properties()
-            chrcs = service.get_characteristics()
-            for chrc in chrcs:
-                response[chrc.get_path()] = chrc.get_properties()
-                descs = chrc.get_descriptors()
-                for desc in descs:
-                    response[desc.get_path()] = desc.get_properties()
-
-        return response
-
-
 class SmartLightService(Service):
     """
     Dummy test service that provides characteristics and descriptors that
@@ -58,7 +23,7 @@ class SmartLightService(Service):
     def __init__(self, bus, index):
         Service.__init__(self, bus, index, self.TEST_SVC_UUID, True)
         self.add_characteristic(LightColourCharacteristic(bus, 0, self))
-        #self.add_characteristic(TestEncryptCharacteristic(bus, 1, self))
+        self.add_characteristic(SwitchCharacteristic(bus, 1, self))
         #self.add_characteristic(TestSecureCharacteristic(bus, 2, self))
 
 class LightColourCharacteristic(Characteristic):
@@ -183,7 +148,7 @@ def main():
             GATT_MANAGER_IFACE)
 
     app = Application(bus)
-
+    app.add_service(SmartLightService(bus, 0))
     mainloop = GObject.MainLoop()
 
     print('Registering GATT application...')
