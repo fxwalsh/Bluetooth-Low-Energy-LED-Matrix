@@ -13,11 +13,6 @@ from bluez_components import *
 sense = SenseHat()
 
 class SmartLightService(Service):
-    """
-    Dummy test service that provides characteristics and descriptors that
-    exercise various API functionality.
-
-    """
     TEST_SVC_UUID = 'FF10'
 
     def __init__(self, bus, index):
@@ -27,11 +22,6 @@ class SmartLightService(Service):
         #self.add_characteristic(TestSecureCharacteristic(bus, 2, self))
 
 class LightColourCharacteristic(Characteristic):
-    """
-    Dummy test characteristic. Allows writing arbitrary bytes to its value, and
-    contains "extended properties", as well as a test descriptor.
-
-    """
     TEST_CHRC_UUID = 'FF11'
 
     def __init__(self, bus, index, service):
@@ -65,32 +55,7 @@ class LightColourCharacteristic(Characteristic):
         print('Finished changing colour!')
         #self.service.energy_expended = 0
 
-
-class TestDescriptor(Descriptor):
-    """
-    Dummy test descriptor. Returns a static value.
-
-    """
-    TEST_DESC_UUID = 'FF12'
-
-    def __init__(self, bus, index, characteristic):
-        Descriptor.__init__(
-                self, bus, index,
-                self.TEST_DESC_UUID,
-                ['read', 'write'],
-                characteristic)
-
-    def ReadValue(self, options):
-        return [
-                dbus.Byte('T'), dbus.Byte('e'), dbus.Byte('s'), dbus.Byte('t')
-        ]
-
-
 class CharacteristicUserDescriptionDescriptor(Descriptor):
-    """
-    Writable CUD descriptor.
-
-    """
     CUD_UUID = '2901'
 
     def __init__(self, bus, index, characteristic):
@@ -110,26 +75,6 @@ class CharacteristicUserDescriptionDescriptor(Descriptor):
         if not self.writable:
             raise NotPermittedException()
         self.value = value
-
-def register_app_cb():
-    print('GATT application registered')
-
-
-def register_app_error_cb(error):
-    print('Failed to register application: ' + str(error))
-    mainloop.quit()
-
-
-def find_adapter(bus):
-    remote_om = dbus.Interface(bus.get_object(BLUEZ_SERVICE_NAME, '/'),
-                               DBUS_OM_IFACE)
-    objects = remote_om.GetManagedObjects()
-
-    for o, props in objects.items():
-        if GATT_MANAGER_IFACE in props.keys():
-            return o
-
-    return None
 
 def main():
     global mainloop
