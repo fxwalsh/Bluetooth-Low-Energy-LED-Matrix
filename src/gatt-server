@@ -88,7 +88,6 @@ class LightColourCharacteristic(Characteristic):
     def WriteValue(self, value, options):
         print('light Colour WriteValue called')
 
-        
         if len(value)!=3:
             raise InvalidValueLengthException()
 
