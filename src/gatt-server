@@ -53,7 +53,7 @@ class SmartLightService(Service):
     exercise various API functionality.
 
     """
-    TEST_SVC_UUID = '12345678-1234-5678-1234-56789abcdef0'
+    TEST_SVC_UUID = 'FF10'
 
     def __init__(self, bus, index):
         Service.__init__(self, bus, index, self.TEST_SVC_UUID, True)
@@ -67,7 +67,7 @@ class LightColourCharacteristic(Characteristic):
     contains "extended properties", as well as a test descriptor.
 
     """
-    TEST_CHRC_UUID = '12345678-1234-5678-1234-56789abcdef1'
+    TEST_CHRC_UUID = 'FF11'
 
     def __init__(self, bus, index, service):
         Characteristic.__init__(
@@ -106,7 +106,7 @@ class TestDescriptor(Descriptor):
     Dummy test descriptor. Returns a static value.
 
     """
-    TEST_DESC_UUID = '12345678-1234-5678-1234-56789abcdef2'
+    TEST_DESC_UUID = 'FF12'
 
     def __init__(self, bus, index, characteristic):
         Descriptor.__init__(
