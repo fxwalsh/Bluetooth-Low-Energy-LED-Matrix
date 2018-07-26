@@ -85,7 +85,7 @@ class TemperatureCharacteristic(Characteristic):
                 ['read', 'notify'],
                 service)
         self.notifying = False
-        self.temp = sense.get_temperature()
+        self.temp = dbus.Byte(int(sense.get_temperature()))
 
     def notify_temp(self):
         if not self.notifying:
@@ -98,7 +98,7 @@ class TemperatureCharacteristic(Characteristic):
         if not self.notifying:
             return True
         
-        self.temp = sense.get_temperature()
+        self.temp = dbus.Byte(int(sense.get_temperature()))
         print('Temp: ' + repr(self.temp))
         self.notify_temp()
         return True
