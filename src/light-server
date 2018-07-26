@@ -104,6 +104,7 @@ class TemperatureCharacteristic(Characteristic):
         return True
 
     def ReadValue(self, options):
+        get_temp()
         print('temp read: ' + repr(self.temp))
         return self.temp
 
