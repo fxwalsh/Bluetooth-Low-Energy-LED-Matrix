@@ -9,14 +9,14 @@ from bluez_components import *
 
 
 class DemoService(Service):
-    TEST_SVC_UUID = 'FF10'
+    TEST_SVC_UUID = 'FF00'
 
     def __init__(self, bus, index):
         Service.__init__(self, bus, index, self.TEST_SVC_UUID, True)
         self.add_characteristic(DemoCharacteristic(bus, 0, self))
 
 class DemoCharacteristic(Characteristic):
-    TEST_CHRC_UUID = 'FF11'
+    TEST_CHRC_UUID = 'FF01'
 
     def __init__(self, bus, index, service):
         Characteristic.__init__(
