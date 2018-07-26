@@ -14,6 +14,7 @@ sense = SenseHat()
 
 class SmartLightService(Service):
     SVC_UUID = 'FF10'
+    lightState = 0 #light is off
 
     def __init__(self, bus, index):
         Service.__init__(self, bus, index, self.SVC_UUID, True)
@@ -22,14 +23,13 @@ class SmartLightService(Service):
 
 class LightColourCharacteristic(Characteristic):
     CHRC_UUID = 'FF11'
-
+    value = [0xFF,0xFF,0xFF] # initial colour for LED light (white)
     def __init__(self, bus, index, service):
         Characteristic.__init__(
                 self, bus, index,
                 self.CHRC_UUID,
                 ['read', 'write', 'writable-auxiliaries'],
                 service)
-        self.value = [0,0,0]
         sense.clear()
         self.add_descriptor(
                 LightColourUserDescription(bus, 0, self))
@@ -39,7 +39,7 @@ class LightColourCharacteristic(Characteristic):
         return self.value
 
     def WriteValue(self, value, options):
-        print('light Colour WriteValue called')
+        print('LightColourCharacteristic write')
         if len(value)!=3:
             raise InvalidValueLengthException()
         sense.clear([int(value[0]),int(value[1]),int(value[2])])
@@ -66,6 +66,65 @@ class LightColourUserDescription(Descriptor):
         if not self.writable:
             raise NotPermittedException()
         self.value = value
+
+class TemperatureService(Service):
+    
+    BATTERY_UUID = '180f'
+
+    def __init__(self, bus, index):
+        Service.__init__(self, bus, index, self.BATTERY_UUID, True)
+        self.add_characteristic(TemperatureCharacteristic(bus, 0, self))
+
+
+class TemperatureCharacteristic(Characteristic):
+    temp_UUID = '2a19'
+
+    def __init__(self, bus, index, service):
+        Characteristic.__init__(
+                self, bus, index,
+                self.temp_UUID,
+                ['read', 'notify'],
+                service)
+        self.notifying = False
+        self.get_temp
+
+    def notify_temp(self):
+        if not self.notifying:
+            return
+        self.PropertiesChanged(
+                GATT_CHRC_IFACE,
+                                { 'Value': [dbus.Byte(self.temp)] }, [])
+
+    def get_temp(self):
+        if not self.notifying:
+            return True
+        
+        self.temp = sense.get_temperature()
+        print('Temp: ' + repr(self.temp))
+        self.notify_temp()
+        return True
+
+    def ReadValue(self, options):
+        print('Battery Level read: ' + repr(self.temp))
+        return [dbus.Byte(self.temp)]
+
+    def StartNotify(self):
+        if self.notifying:
+            print('Already notifying, nothing to do')
+            return
+        self.notifying = True
+        self.notify_temp()
+
+    def StopNotify(self):
+        if not self.notifying:
+            print('Not notifying, nothing to do')
+            return
+
+        self.notifying = False
+
+
+
+
 
 def main():
     global mainloop
