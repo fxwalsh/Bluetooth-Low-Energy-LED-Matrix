@@ -19,7 +19,6 @@ class SmartLightService(Service):
     def __init__(self, bus, index):
         Service.__init__(self, bus, index, self.SVC_UUID, True)
         self.add_characteristic(LightColourCharacteristic(bus, 0, self))
-        self.add_characteristic(TemperatureCharacteristic(bus, 1, self))
 
 class LightColourCharacteristic(Characteristic):
     CHRC_UUID = 'FF11'
@@ -144,6 +143,7 @@ def main():
 
     app = Application(bus)
     app.add_service(SmartLightService(bus, 0))
+    app.add_service(TemperatureService(bus, 1))
     mainloop = GObject.MainLoop()
 
     print('Registering GATT application...')
