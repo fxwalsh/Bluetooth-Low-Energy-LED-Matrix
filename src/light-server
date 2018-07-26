@@ -111,25 +111,20 @@ class TemperatureCharacteristic(Characteristic):
             print('Already notifying, nothing to do')
             return
         self.notifying = True
-        self.notify_temp()
+        print('Starting timer event')
+        GObject.timeout_add(500, self.notify_temp())
 
     def StopNotify(self):
         if not self.notifying:
             print('Not notifying, nothing to do')
             return
-
         self.notifying = False
-
-def sint16(value):
-    return int(value * 100).to_bytes(2, byteorder='little', signed=True)
-
 
 def temp_sint16(value):
     answer = []
-    value_int16 = sint16(value)
+    value_int16=int(value * 100).to_bytes(2, byteorder='little', signed=True)
     for bytes in value_int16:
         answer.append(dbus.Byte(bytes))
-
     return answer
 
 
