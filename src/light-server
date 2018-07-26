@@ -76,12 +76,12 @@ class TemperatureService(Service):
 
 
 class TemperatureCharacteristic(Characteristic):
-    temp_UUID = '2a6e'
+    TEMP_UUID = '2a6e'
 
     def __init__(self, bus, index, service):
         Characteristic.__init__(
                 self, bus, index,
-                self.temp_UUID,
+                self.TEMP_UUID,
                 ['read', 'notify'],
                 service)
         self.notifying = False
@@ -104,7 +104,7 @@ class TemperatureCharacteristic(Characteristic):
         return True
 
     def ReadValue(self, options):
-        print('ENV Level read: ' + repr(self.temp))
+        print('temp read: ' + repr(self.temp))
         return [dbus.Byte(self.temp)]
 
     def StartNotify(self):
