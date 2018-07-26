@@ -8,33 +8,31 @@ except ImportError:
   import gobject as GObject
 import sys
 import array
-from sense_hat import SenseHat
 from bluez_components import *
+from sense_hat import SenseHat
 sense = SenseHat()
 
 class SmartLightService(Service):
-    TEST_SVC_UUID = 'FF10'
+    SVC_UUID = 'FF10'
 
     def __init__(self, bus, index):
-        Service.__init__(self, bus, index, self.TEST_SVC_UUID, True)
+        Service.__init__(self, bus, index, self.SVC_UUID, True)
         self.add_characteristic(LightColourCharacteristic(bus, 0, self))
-        #self.add_characteristic(SwitchCharacteristic(bus, 1, self))
-        #self.add_characteristic(TestSecureCharacteristic(bus, 2, self))
+
 
 class LightColourCharacteristic(Characteristic):
-    TEST_CHRC_UUID = 'FF11'
+    CHRC_UUID = 'FF11'
 
     def __init__(self, bus, index, service):
         Characteristic.__init__(
                 self, bus, index,
-                self.TEST_CHRC_UUID,
+                self.CHRC_UUID,
                 ['read', 'write', 'writable-auxiliaries'],
                 service)
         self.value = [0,0,0]
-        sense.clear([self.value[0],self.value[1],self.value[2]])
-        self.add_descriptor(TestDescriptor(bus, 0, self))
+        sense.clear()
         self.add_descriptor(
-                CharacteristicUserDescriptionDescriptor(bus, 1, self))
+                LightColourUserDescription(bus, 0, self))
 
     def ReadValue(self, options):
         print('LightColourCharacteristic Read: ' + repr(self.value))
@@ -42,20 +40,13 @@ class LightColourCharacteristic(Characteristic):
 
     def WriteValue(self, value, options):
         print('light Colour WriteValue called')
-
         if len(value)!=3:
             raise InvalidValueLengthException()
-
-        print('Colour value length: '+repr(len(value)))
         sense.clear([int(value[0]),int(value[1]),int(value[2])])
         self.value = value
-        #if byte != 1:
-        #    raise FailedException("0x80")
-
         print('Finished changing colour!')
-        #self.service.energy_expended = 0
 
-class CharacteristicUserDescriptionDescriptor(Descriptor):
+class LightColourUserDescription(Descriptor):
     CUD_UUID = '2901'
 
     def __init__(self, bus, index, characteristic):

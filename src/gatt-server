@@ -9,7 +9,7 @@ from bluez_components import *
 
 
 class DemoService(Service):
-    TEST_SVC_UUID = 'FF00'
+#    TEST_SVC_UUID = 'FF00'
 
     def __init__(self, bus, index):
         Service.__init__(self, bus, index, self.TEST_SVC_UUID, True)
