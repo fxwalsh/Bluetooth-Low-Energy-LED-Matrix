@@ -95,11 +95,9 @@ class TemperatureCharacteristic(Characteristic):
                                 { 'Value': self.temp }, [])
 
     def get_temp(self):
+        self.temp = temp_sint16(sense.get_temperature())
         if not self.notifying:
             return True
-        
-        self.temp = temp_sint16(sense.get_temperature())
-        print('Temp: ' + repr(self.temp))
         self.notify_temp()
         return True
 
