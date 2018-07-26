@@ -127,7 +127,7 @@ def sint16(value):
 
 def temp_sint16(value):
     answer = []
-    value_int16 = sint16(value[0])
+    value_int16 = sint16(value)
     for bytes in value_int16:
         answer.append(dbus.Byte(bytes))
 
