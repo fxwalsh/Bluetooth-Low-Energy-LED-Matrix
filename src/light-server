@@ -85,27 +85,27 @@ class TemperatureCharacteristic(Characteristic):
                 ['read', 'notify'],
                 service)
         self.notifying = False
-        self.temp = dbus.Byte(int(sense.get_temperature()))
+        self.temp = temp_sint16(sense.get_temperature())
 
     def notify_temp(self):
         if not self.notifying:
             return
         self.PropertiesChanged(
                 GATT_CHRC_IFACE,
-                                { 'Value': [dbus.Byte(self.temp)] }, [])
+                                { 'Value': self.temp }, [])
 
     def get_temp(self):
         if not self.notifying:
             return True
         
-        self.temp = dbus.Byte(int(sense.get_temperature()))
+        self.temp = temp_sint16(sense.get_temperature())
         print('Temp: ' + repr(self.temp))
         self.notify_temp()
         return True
 
     def ReadValue(self, options):
         print('temp read: ' + repr(self.temp))
-        return [dbus.Byte(self.temp)]
+        return self.temp
 
     def StartNotify(self):
         if self.notifying:
@@ -121,7 +121,17 @@ class TemperatureCharacteristic(Characteristic):
 
         self.notifying = False
 
+def sint16(value):
+    return int(value * 100).to_bytes(2, byteorder='little', signed=True)
 
+
+def temp_sint16(value):
+    answer = []
+    value_int16 = sint16(value[0])
+    for bytes in value_int16:
+        answer.append(dbus.Byte(bytes))
+
+    return answer
 
 
 
