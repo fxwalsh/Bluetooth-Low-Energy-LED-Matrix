@@ -86,6 +86,7 @@ class TemperatureCharacteristic(Characteristic):
                 service)
         self.notifying = False
         self.temp = temp_sint16(sense.get_temperature())
+        GObject.timeout_add(1000, self.get_temp)
 
     def notify_temp(self):
         if not self.notifying:
@@ -93,6 +94,8 @@ class TemperatureCharacteristic(Characteristic):
         self.PropertiesChanged(
                 GATT_CHRC_IFACE,
                                 { 'Value': self.temp }, [])
+        print('temp notify: ' + repr(self.temp))
+        return self.notifying
 
     def get_temp(self):
         self.temp = temp_sint16(sense.get_temperature())
@@ -111,8 +114,7 @@ class TemperatureCharacteristic(Characteristic):
             print('Already notifying, nothing to do')
             return
         self.notifying = True
-        print('Starting timer event')
-        GObject.timeout_add(500, self.notify_temp())
+        print('Started timer event')
 
     def StopNotify(self):
         if not self.notifying:
